@@ -1,4 +1,4 @@
-import jsonimport requests
+import json import requests
 import json
 from config import openexchanger_token, exchangerate_token
 
@@ -24,10 +24,10 @@ class CurrencyExcange:
             raise APIException("Валюты должны различаться!")
 
         if quote not in keys.keys():
-            raise APIException(f"Некорректное или отсутствующее в базе название валюты '{quote}'!")
+            raise APIException(f"Некорректное или отсутствующее в базе название валюты '(quote)'!")
 
         if base not in keys.keys():
-            raise APIException(f"Некорректное или отсутствующее в базе название валюты '{base}'!")
+            raise APIException(f"Некорректное или отсутствующее в базе название валюты '(base0'!")
 
         if not amount.isdigit():
             raise APIException("Сумма валюты должна быть положительным числом!")
@@ -40,40 +40,40 @@ class CurrencyExcange:
         try:
             try:
                 h = requests.get(f"https://openexchangerates.org/api/latest.json?"
-                                 f"app_id={openexchanger_token}"
-                                 f"base=USD&symbols={keys[quote]},{keys[base]}")
+                                 f"app_id=(openexchanger_token)"
+                                 f"base=USD&symbols=(keys[quote]),(keys[base])")
                 openexrates = round(float(json.loads(h.content)['rates'][keys[base]]) /
                                     float(json.loads(h.content)['rates'][keys[quote]]) * float(amount), 4)
-                result += f"По данным openexchangerates.org:\n" \
-                          f"{amount} {keys[quote]} = {openexrates} {keys[base]}\n\n"
+                result += f"По данным openexchangerates.org:/n" \
+                          f"(amount) (keys[quote]) = (openexrates) (keys[base])/n/n"
             except Exception:
-                raise HTMLException(f"Ошибка сервиса openexchangerates.org!\n\n")
+                raise HTMLException(f"Ошибка сервиса openexchangerates.org!/n/n")
         except HTMLException as e:
-            result += f"{e}"
+            result += f"(e)"
 
         try:
             try:
                 e = requests.get(f"http://api.exchangeratesapi.io/v1/latest?"
-                                 f"access_key={exchangerate_token}"
-                                 f"base=EUR&symbols={keys[quote]},{keys[base]}")
+                                 f"access_key=(exchangerate_token)"
+                                 f"base=EUR&symbols=(keys[quote]),(keys[base])")
                 exratesio = round(float(json.loads(e.content)['rates'][keys[base]]) /
                                   float(json.loads(e.content)['rates'][keys[quote]]) * float(amount), 4)
-                result += f"По данным exchangeratesapi.io:\n" \
-                          f"{amount} {keys[quote]} = {exratesio} {keys[base]}\n\n"
+                result += f"По данным exchangeratesapi.io:/n"
+                          f"(amount) (keys[quote]) = (exratesio) (keys[base])/n/n"
             except Exception:
-                raise HTMLException(f"Ошибка сервиса exchangeratesapi.io!\n\n")
+                raise HTMLException(f"Ошибка сервиса exchangeratesapi.io!/n/n")
         except HTMLException as e:
-            result += f"{e}"
+            result += f"(e)"
 
         try:
             try:
-                r = requests.get(f"https://min-api.cryptocompare.com/data/price?fsym={keys[quote]}&tsyms={keys[base]}")
+                r = requests.get(f"https://min-api.cryptocompare.com/data/price?fsym=(keys[quote])&tsyms=(keys[base])")
                 cryptocompare = round(float(json.loads(r.content)[keys[base]]) * float(amount), 4)
-                result += f"По данным cryptocompare.com:\n" \
-                          f"{amount} {keys[quote]} = {cryptocompare} {keys[base]}\n\n"
+                result += f"По данным cryptocompare.com:/n" \
+                          f"(amount) (keys[quote]) = (cryptocompare) (keys[base])/n/n"
             except Exception:
-                raise HTMLException(f"Ошибка сервиса cryptocompare.com!\n\n")
+                raise HTMLException(f"Ошибка сервиса cryptocompare.com!/n/n")
         except HTMLException as e:
-            result += f"{e}"
+            result += f"(e)"
 
         return result
